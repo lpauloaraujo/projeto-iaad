@@ -49,6 +49,42 @@ def CRUD():
         tabelas_disponiveis
     )
 
+    #Seção de Criação de Tabelas - CREATE
+
+    tipos_atributos = [
+        "VARCHAR",
+        "CHAR",
+        "TEXT",
+        "INT",
+        "BIGINT",
+        "DECIMAL",
+        "NUMERIC",
+        "FLOAT",
+        "DOUBLE",
+        "DATE",
+        "DATETIME",
+        "BOOLEAN"
+    ]
+
+    st.header("Criação de Tabelas")
+    col_ntabela, col_qtd_cols = st.columns([2, 0.5])  
+
+    with col_ntabela:
+        nome_tabela = st.text_input("Nome da tabela")
+    with col_qtd_cols:
+        qtd_colunas = st.number_input("Quantidade de colunas", min_value=1, step=1, format="%d")
+
+    dic_cols = {}
+    for col in range(qtd_colunas):
+        nome = st.text_input(key=f"nome_{col}", label=f"Nome da {col + 1}° coluna")
+        tipo = st.selectbox(key=f"tipo_{col}", label=f"Tipo da {col + 1}° coluna", options=tipos_atributos)
+        config = st.text_input(key=f"config_{col}", label=f"Configuração da {col + 1}° coluna (exp: NOT NULL, PRIMARY KEY, etc...)")
+        dic_cols[nome] = [tipo, config]
+    
+    comando_colunas = adaptar_dic_colunas(dic_cols)
+
+    print(nome_tabela, comando_colunas)
+
     # Seção de Atualização de Registro - UPDATE
     st.header("Atualizar Registro")
     registros = listar_registros(tabela_selecionada)

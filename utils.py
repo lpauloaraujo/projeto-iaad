@@ -53,3 +53,27 @@ def listar_registros(tabela):
         if cnx.is_connected():
             cursor.close()
             cnx.close()
+
+#Funções do CREATE
+def criar_tabela(nome_tabela, colunas):
+    cnx = mysql.connector.connect(**db_config)
+    cursor = cnx.cursor()
+    cols = adaptar_dic_colunas(colunas)
+    cursor.execute(f"CREATE TABLE {nome_tabela} += {cols}")
+    pass
+
+def adaptar_dic_colunas(dic_colunas):
+    contador = 0
+    colunas = '('
+    for key, items in dic_colunas.items():
+        colunas += key + ' '
+        for item in items:
+            if item == items[len(items) - 1]:
+                if contador == len(dic_colunas) - 1:
+                    colunas += f'{item}'
+                else:
+                    colunas += f'{item}, '
+            else:
+                colunas += item
+        contador += 1
+    return colunas + ');'
