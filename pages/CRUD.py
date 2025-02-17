@@ -15,6 +15,8 @@ def CRUD():
         "startup"
     ]
 
+    chaves_primarias = obter_chaves_primarias(tabelas_disponiveis)
+
     # Filtros disponíveis para cada tabela
     filtros_por_tabela = {
         "dependentes": [
@@ -67,24 +69,114 @@ def CRUD():
         "BOOLEAN"
     ]
 
+    configuracoes = [
+        "PRIMARY KEY",
+        "FOREIGN KEY",
+        "NOT NULL",
+        "AUTO_INCREMENT"
+    ]
+
+    # Seção de criação de tabelas - CREATE
     st.header("Criação de Tabelas")
     col_ntabela, col_qtd_cols = st.columns([2, 0.5])  
 
     with col_ntabela:
-        nome_tabela = st.text_input("Nome da tabela")
+        nome_da_tabela = st.text_input("Nome da tabela")
     with col_qtd_cols:
         qtd_colunas = st.number_input("Quantidade de colunas", min_value=1, step=1, format="%d")
 
     dic_cols = {}
+    lista_fks = []
     for col in range(qtd_colunas):
         nome = st.text_input(key=f"nome_{col}", label=f"Nome da {col + 1}° coluna")
-        tipo = st.selectbox(key=f"tipo_{col}", label=f"Tipo da {col + 1}° coluna", options=tipos_atributos)
-        config = st.text_input(key=f"config_{col}", label=f"Configuração da {col + 1}° coluna (exp: NOT NULL, PRIMARY KEY, etc...)")
-        dic_cols[nome] = [tipo, config]
-    
-    comando_colunas = adaptar_dic_colunas(dic_cols)
+        col_tipo, col_config_tipo = st.columns([1, 1])
+        with col_tipo:
+            tipo = st.selectbox(key=f"tipo_{col}", label=f"Tipo da {col + 1}° coluna", options=tipos_atributos)
+        with col_config_tipo:
+            if tipo in ['CHAR', 'VARCHAR']:
+                qtd_char = st.number_input(key=f"qtd_vc_{col}", label=f"Quantidade de caracteres {tipo}", min_value=1, step=1)
+                tipo += f"({qtd_char})"
+            elif tipo in ['DECIMAL', 'FLOAT']:
+                digitos, digitos_dps = st.columns([1, 1])
+                with digitos:
+                    total_digitos = st.number_input(key= f"total_digitos_{col}", label="Total de dígitos", min_value=1, step=1, format="%d")
+                with digitos_dps:
+                    digitos_posv = st.number_input(key= f"digitos_pos_virgula_{col}", label="Dígitos após a vírgula", min_value=1, step=1, format="%d")
+                tipo += f"({total_digitos},{digitos_posv})"
+            elif tipo == 'BIGINT':
+                bigint_espec = st.selectbox(key=f"big_{col}", label="Tipo de BIGINT", options=["SIGNED", "UNSIGNED"])
+                tipo += f" {bigint_espec}"
+        config = st.multiselect(key=f"config_{col}", label=f"Configurações da {col + 1}° coluna", options=configuracoes)
+        if 'FOREIGN KEY' in config:
+            refe, ondelete = st.columns([1, 1])
+            with refe:
+                referencia = st.selectbox(key=f"reference_fk{col}", label=f"Referência da chave estrangeria {nome}", 
+                                        options=[f"FOREIGN KEY {nome} REFERENCES {tabela}({', '.join(pk)})" for tabela, pk in chaves_primarias.items()])
+            with ondelete:
+                on_delete = st.selectbox(key=f"on_del{col}", label=f"Tipo de ON DELETE", 
+                                        options=["Nenhum", "ON DELETE CASCADE", "ON DELETE RESTRICT"])
+                if on_delete != 'Nenhum':
+                    referencia += f" {on_delete}"
+            lista_fks.append(referencia)
+            for indice, con in enumerate(config):
+                if con == "FOREIGN KEY":
+                    config.pop(indice)
 
-    print(nome_tabela, comando_colunas)
+        if len(config) > 0:
+            if len(config) > 1:
+                configs = " ".join(config)
+                dic_cols[nome] = tipo + " " + configs
+            else:
+                dic_cols[nome] = tipo + " " + config[0]
+        else:
+            dic_cols[nome] = tipo
+    
+    dic_cols['fks'] = lista_fks
+
+    if st.button("Criar tabela"):
+        criar_tabela(nome_da_tabela, dic_cols)
+        tabelas_disponiveis.append(nome_da_tabela)
+
+    st.header("Adicionar Nova Coluna")
+    tabela_uni = st.selectbox("Selecione a tebela a receber a nova coluna", tabelas_disponiveis)
+    nome_uni = st.text_input("Nome da nova coluna")
+    col_tipo_uni, col_config_tipo_uni = st.columns([1, 1])
+    with col_tipo_uni:
+        tipo_uni = st.selectbox("Tipo da coluna", tipos_atributos)
+    with col_config_tipo_uni:
+        if tipo_uni in ['CHAR', 'VARCHAR']:
+            qtd_char_uni = st.number_input(label=f"Quantidade de caracteres {tipo_uni}", min_value=1, step=1)
+            tipo_uni += f"({qtd_char_uni})"
+        elif tipo_uni in ['DECIMAL', 'FLOAT']:
+            digitos_uni, digitos_dps_uni = st.columns([1, 1])
+            with digitos_uni:
+                total_digitos_uni = st.number_input(label="Total de dígitos", min_value=1, step=1, format="%d")
+            with digitos_dps_uni:
+                digitos_posv_uni = st.number_input(label="Dígitos após a vírgula", min_value=1, step=1, format="%d")
+            tipo_uni += f"({total_digitos_uni},{digitos_posv_uni})"
+        elif tipo_uni == 'BIGINT':
+            bigint_espec_uni = st.selectbox(label="Tipo de BIGINT", options=["SIGNED", "UNSIGNED"])
+            tipo_uni += f" {bigint_espec_uni}"
+    config_uni = st.multiselect(label=f"Configurações da {col + 1}° coluna", options=configuracoes)
+    if 'FOREIGN KEY' in config_uni:
+        refe_uni, ondelete_uni = st.columns([1, 1])
+        with refe_uni:
+            referencia_uni = st.selectbox(label=f"Referência da chave estrangeria {nome_uni}", 
+                                    options=[f"FOREIGN KEY {nome_uni} REFERENCES {tabela}({', '.join(pk)})" for tabela, pk in chaves_primarias.items()])
+        with ondelete_uni:
+            on_delete_uni = st.selectbox(label=f"Tipo de ON DELETE", 
+                                    options=["Nenhum", "ON DELETE CASCADE", "ON DELETE RESTRICT"])
+            if on_delete_uni != 'Nenhum':
+                referencia_uni += f" {on_delete_uni}"
+
+        for indice_uni, con_uni in enumerate(config_uni):
+            if con_uni == "FOREIGN KEY":
+                config_uni.pop(indice_uni)
+                config_uni.append(f"ADD f{referencia_uni}")
+
+    if st.button("Adicionar coluna"):
+        print(config_uni)
+        adicionar_coluna(tabela_uni, nome_uni, f"{tipo_uni} {config_uni[0]}")
 
     # Seção de Atualização de Registro - UPDATE
     st.header("Atualizar Registro")

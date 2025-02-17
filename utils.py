@@ -1,6 +1,25 @@
 import streamlit as st
 import mysql.connector
 from db_config import db_config
+from collections import defaultdict
+
+def obter_chaves_primarias(tabelas_existentes):
+    cnx = mysql.connector.connect(**db_config)
+    cursor = cnx.cursor()
+    placeholders = ', '.join(['%s'] * len(tabelas_existentes))
+    query = f"""
+    SELECT TABLE_NAME, COLUMN_NAME
+    FROM information_schema.KEY_COLUMN_USAGE
+    WHERE TABLE_SCHEMA = %s
+    AND TABLE_NAME IN ({placeholders})
+    AND CONSTRAINT_NAME = 'PRIMARY';
+    """
+    cursor.execute(query, ('startups2va', *tabelas_existentes))
+    primary_keys = cursor.fetchall()
+    primary_keys_dict = defaultdict(list)
+    for table, column in primary_keys:
+        primary_keys_dict[table].append(column)
+    return primary_keys_dict
 
 def exibir_tabela(tupla):
     results, column_names = tupla
@@ -59,21 +78,20 @@ def criar_tabela(nome_tabela, colunas):
     cnx = mysql.connector.connect(**db_config)
     cursor = cnx.cursor()
     cols = adaptar_dic_colunas(colunas)
-    cursor.execute(f"CREATE TABLE {nome_tabela} += {cols}")
-    pass
+    cursor.execute(f"CREATE TABLE {nome_tabela} {cols}")
 
 def adaptar_dic_colunas(dic_colunas):
-    contador = 0
     colunas = '('
-    for key, items in dic_colunas.items():
-        colunas += key + ' '
-        for item in items:
-            if item == items[len(items) - 1]:
-                if contador == len(dic_colunas) - 1:
-                    colunas += f'{item}'
-                else:
-                    colunas += f'{item}, '
-            else:
-                colunas += item
-        contador += 1
-    return colunas + ');'
+    for key, value in dic_colunas.items():
+        if key == 'fks':
+            for i, ref in enumerate(dic_colunas['fks']):
+                if i == len(dic_colunas['fks']) - 1:
+                    colunas += f"{ref});"
+                    return colunas
+                colunas += f"{ref}, "
+        colunas += f"{key} {value}, "
+
+def adicionar_coluna(tabela, nome, configs):
+    cnx = mysql.connector.connect(**db_config)
+    cursor = cnx.cursor()
+    cursor.execute(f"ALTER TABLE {tabela} ADD {nome} {configs}")
