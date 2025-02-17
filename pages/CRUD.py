@@ -2,6 +2,7 @@ import streamlit as st
 from consultas import *
 from atualizar import *
 from utils import *
+from delete import *
 
 
 
@@ -171,5 +172,41 @@ def CRUD():
         else:
             st.error("Selecione uma tabela e pelo menos uma coluna.")
 
+
+    # Seção de Exclusão de Registro - DELETE
+    st.header("Excluir Registro")
+    registros_para_excluir = listar_registros(tabela_selecionada)
+
+    if registros_para_excluir:
+        # Exibir os registros em um selectbox para o usuário escolher
+        opcoes_registros_excluir = [str(registro) for registro in registros_para_excluir]
+        registro_selecionado_para_excluir = st.selectbox("Escolha o registro para excluir:", opcoes_registros_excluir)
+
+        # Obter o índice do registro selecionado
+        indice_registro_excluir = opcoes_registros_excluir.index(registro_selecionado_para_excluir)
+        registro_excluir = registros_para_excluir[indice_registro_excluir]
+
+        # Botão para confirmar a exclusão
+        if st.button("Excluir Registro"):
+            # Construir a condição WHERE (usando a chave primária ou todos os campos para garantir unicidade)
+            where_condicao_excluir = " AND ".join([f"{k} = %s" for k in registro_excluir.keys()])
+            valores_where_excluir = tuple(registro_excluir.values())
+
+            # Executar a exclusão
+            resultado_exclusao = deletar_registro(
+                tabela=tabela_selecionada,
+                where_condicao=where_condicao_excluir,
+                valores_where=valores_where_excluir
+            )
+
+            # Exibir a tabela atualizada
+            if resultado_exclusao["status"] == "sucesso":
+                st.success(resultado_exclusao["mensagem"])
+                st.write("Tabela atualizada:")
+                st.table(resultado_exclusao["tabela_atualizada"])
+            else:
+                st.error(resultado_exclusao["mensagem"])
+    else:
+        st.warning(f"Nenhum registro encontrado na tabela '{tabela_selecionada}'.")
 # Executar a aplicação
 CRUD()
