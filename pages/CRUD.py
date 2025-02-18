@@ -7,13 +7,7 @@ from delete import *
 
 
 def CRUD():
-    tabelas_disponiveis = [
-        "dependentes",
-        "linguagem",
-        "programador",
-        "programador_linguagem",
-        "startup"
-    ]
+    tabelas_disponiveis = get_table_names()
 
     chaves_primarias = obter_chaves_primarias(tabelas_disponiveis)
 
@@ -23,23 +17,35 @@ def CRUD():
             ' ',
             'Filho ou Filha de um programador/programadora',
             'Esposa ou Marido de um programador/programadora',
-            'filho ou filha com 10 anos ou mais'
+            'filho ou filha com 10 anos ou mais',
+            'Listar todos os nomes de programadores e dependentes (UNION)'
         ],
         "programador": [
             ' ',
             'tem 30 anos ou mais',
             'tem menos de 30 anos',
             'Somente genero masculino',
-            'Somente genero feminino'
+            'Somente genero feminino',
+            'programadores e suas linguagens (NATURAL JOIN)',
+            'Listar todos os programadores e seus respectivos dependentes (LEF)',
+            'Listar todos os nomes de programadores e dependentes (UNION)',
+            'Programadores sem startups (LEFT JOIN EXCLUSIVO)',
+            'Listar programadores, suas startups e as linguagens que conhecem (NATURAL JOIN)'
+            
+
         ],
         "linguagem": [
-            ' '
+            ' ',
+            'linguagens que não estão associadas a nenhum programador (LEFT JOIN EXCLUSIVO)',
+            'Listar programadores, suas startups e as linguagens que conhecem (NATURAL JOIN)'
         ],
         "programador_linguagem": [
             ' '
         ],
         "startup": [
-            ' '
+            ' ',
+            'Startups sem programadores (LEFT JOIN EXCLUSIVO)',
+            'Listar programadores, suas startups e as linguagens que conhecem (NATURAL JOIN)'
         ]
     }
 
@@ -85,7 +91,6 @@ def CRUD():
 
             # Exibir resultados
             if resultados:
-                st.write("Resultados da consulta:")
                 exibir_tabela((resultados, colunas))
             else:
                 st.write("Nenhum resultado encontrado.")
@@ -255,6 +260,7 @@ def CRUD():
 
         # Coletar o novo valor
         novo_valor = st.text_input(f"Novo valor para '{coluna_selecionada}':")
+
 
         # Botão para confirmar a alteração
         if st.button("Alterar Registro"):

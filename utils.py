@@ -73,6 +73,9 @@ def listar_registros(tabela):
             cursor.close()
             cnx.close()
 
+
+
+
 #Funções do CREATE
 def criar_tabela(nome_tabela, colunas):
     try:
@@ -117,3 +120,22 @@ def adicionar_coluna(tabela, nome, configs):
         if cnx.is_connected():
             cursor.close()
             cnx.close()
+
+import mysql.connector
+
+def get_table_names():
+    try:
+        conn = mysql.connector.connect(**db_config)
+        cursor = conn.cursor()
+        cursor.execute("SHOW TABLES")
+        tables = [table[0] for table in cursor.fetchall()]
+        cursor.close()
+        conn.close()
+        return tables
+    except mysql.connector.Error as err:
+        print(f"Erro: {err}")
+        return []
+
+
+
+

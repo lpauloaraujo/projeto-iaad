@@ -2,32 +2,6 @@ import mysql.connector
 from db_config import db_config  
 
 
-def startups_sem_programadores():
-
-    cnx = mysql.connector.connect(**db_config)
-    cursor = cnx.cursor()
-
-    # Executar uma consulta
-    query = """
-    SELECT 
-        nome_startup 
-    FROM 
-        startups2va.startup 
-    NATURAL LEFT JOIN 
-        startups2va.programador 
-    WHERE 
-        id_programador IS NULL 
-    ORDER BY 
-        nome_startup;
-"""
-    cursor.execute(query)
-
-    results = cursor.fetchall()
-    # Obter os nomes das colunas
-    column_names = [i[0] for i in cursor.description]
-
-    return (results, column_names)
-
 def consulta_colunas_tabela(tabela, colunas="*", where=None):
     
         # Conectar ao banco de dados
@@ -56,7 +30,104 @@ def consulta_colunas_tabela(tabela, colunas="*", where=None):
         elif where == 'Somente genero masculino':
                 query += " WHERE genero_programador = 'M'"
         elif where == 'Somente genero feminino':
-                query += " WHERE genero_programador = 'F'"        
+                query += " WHERE genero_programador = 'F'"       
+        elif where == 'Startups sem programadores (LEFT JOIN EXCLUSIVO)':
+                query = """
+                SELECT 
+                    nome_startup 
+                FROM 
+                    startups2va.startup 
+                NATURAL LEFT JOIN 
+                    startups2va.programador 
+                WHERE 
+                    id_programador IS NULL 
+                ORDER BY 
+                    nome_startup;
+                """
+        elif where == 'Programadores sem startups (LEFT JOIN EXCLUSIVO)':
+                query = """
+                SELECT 
+                    nome_programador 
+                FROM 
+                    startups2va.programador 
+                NATURAL LEFT JOIN 
+                    startups2va.startup 
+                WHERE 
+                    id_startup IS NULL 
+                ORDER BY 
+                    nome_programador;
+                """
+        
+        elif where == 'programadores e suas linguagens (NATURAL JOIN)':
+               query = """
+               SELECT 
+                    p.nome_programador, 
+                    l.nome_linguagem 
+                FROM 
+                    startups2va.programador p 
+                NATURAL JOIN 
+                    startups2va.programador_linguagem pl 
+                NATURAL JOIN 
+                    startups2va.linguagem l 
+                ORDER BY 
+                    p.nome_programador;
+                """
+        
+        elif where == 'linguagens que não estão associadas a nenhum programador (LEFT JOIN EXCLUSIVO)':
+               query = """
+                SELECT 
+                    l.nome_linguagem 
+                FROM 
+                    startups2va.linguagem l 
+                NATURAL LEFT JOIN 
+                    startups2va.programador_linguagem pl 
+                WHERE 
+                    pl.id_programador IS NULL 
+                ORDER BY 
+                    l.nome_linguagem;
+                """
+        elif where == 'Listar programadores, suas startups e as linguagens que conhecem (NATURAL JOIN)':
+               query = """
+               SELECT 
+                    p.nome_programador, 
+                    s.nome_startup, 
+                    l.nome_linguagem 
+                FROM 
+                    startups2va.programador p 
+                NATURAL JOIN 
+                    startups2va.startup s 
+                NATURAL JOIN 
+                    startups2va.programador_linguagem pl 
+                NATURAL JOIN 
+                    startups2va.linguagem l 
+                ORDER BY 
+                    p.nome_programador;
+                """
+        elif where == 'Listar todos os nomes de programadores e dependentes (UNION)':
+               query = """
+               SELECT 
+                    nome_programador AS nome 
+                FROM 
+                    startups2va.programador
+                UNION
+                SELECT 
+                    nome_dependente AS nome 
+                FROM 
+                    startups2va.dependentes;
+                """
+        elif where == 'Listar todos os programadores e seus respectivos dependentes (LEFT JOIN)':
+               query = """
+               SELECT 
+                    p.nome_programador, 
+                    d.nome_dependente,
+                    d.parentesco
+                FROM 
+                    startups2va.dependentes d 
+                NATURAL LEFT JOIN 
+                    startups2va.programador p 
+                ORDER BY 
+                    d.nome_dependente;
+                """
         else:
                 query = f"SELECT {colunas_str} FROM {tabela}"
 
@@ -70,8 +141,3 @@ def consulta_colunas_tabela(tabela, colunas="*", where=None):
         return (results, column_names)
 
 
-
-
-
-
-    
