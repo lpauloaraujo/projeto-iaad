@@ -79,8 +79,8 @@ def criar_tabela(nome_tabela, colunas):
         cnx = mysql.connector.connect(**db_config)
         cursor = cnx.cursor()
         cols = adaptar_dic_colunas(colunas)
-        st.success(f'Tabela "{nome_tabela}" criada com sucesso.')
         cursor.execute(f"CREATE TABLE {nome_tabela} {cols}")
+        st.success(f'Tabela "{nome_tabela}" criada com sucesso.')
     except mysql.connector.Error as err:
         st.error(f"Erro ao criar tabela: {err}")
     finally:
@@ -91,14 +91,14 @@ def criar_tabela(nome_tabela, colunas):
 def adaptar_dic_colunas(dic_colunas):
     colunas = '('
     for key, value in dic_colunas.items():
-        if key == 'fks':
-            if len(dic_colunas['fks']) == 0:
+        if key == 'keys':
+            if len(dic_colunas['keys']) == 0:
                 colunas = colunas[:len(colunas) - 2]
                 colunas += ');'
                 return colunas
             else:
-                for i, ref in enumerate(dic_colunas['fks']):
-                    if i == len(dic_colunas['fks']) - 1:
+                for i, ref in enumerate(dic_colunas['keys']):
+                    if i == len(dic_colunas['keys']) - 1:
                         colunas += f"{ref});"
                         return colunas
                     colunas += f"{ref}, "
@@ -109,7 +109,7 @@ def adicionar_coluna(tabela, nome, configs):
     try:
         cnx = mysql.connector.connect(**db_config)
         cursor = cnx.cursor()
-        cursor.execute(f"ALTER TABLE {tabela} ADD {nome} {configs}")
+        cursor.execute(f"ALTER TABLE {tabela} ADD COLUMN {nome} {configs};")
         st.success(f'Coluna "{nome}" adicionada a tabela "{tabela}" com sucesso.')
     except mysql.connector.Error as err:
         st.error(f"Erro ao adicionar coluna: {err}")

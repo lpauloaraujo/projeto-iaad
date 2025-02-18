@@ -109,8 +109,6 @@ def CRUD():
     ]
 
     configuracoes = [
-        "PRIMARY KEY",
-        "FOREIGN KEY",
         "NOT NULL",
         "AUTO_INCREMENT"
     ]
@@ -125,9 +123,11 @@ def CRUD():
         qtd_colunas = st.number_input("Quantidade de colunas", min_value=1, step=1, format="%d")
 
     dic_cols = {}
-    lista_fks = []
+    lista_colunas = [None] * qtd_colunas
+
     for col in range(qtd_colunas):
         nome = st.text_input(key=f"nome_{col}", label=f"Nome da {col + 1}° coluna")
+        lista_colunas[col] = nome
         col_tipo, col_config_tipo = st.columns([1, 1])
         with col_tipo:
             tipo = st.selectbox(key=f"tipo_{col}", label=f"Tipo da {col + 1}° coluna", options=tipos_atributos)
@@ -146,20 +146,6 @@ def CRUD():
                 bigint_espec = st.selectbox(key=f"big_{col}", label="Tipo de BIGINT", options=["SIGNED", "UNSIGNED"])
                 tipo += f" {bigint_espec}"
         config = st.multiselect(key=f"config_{col}", label=f"Configurações da {col + 1}° coluna", options=configuracoes)
-        if 'FOREIGN KEY' in config:
-            refe, ondelete = st.columns([1, 1])
-            with refe:
-                referencia = st.selectbox(key=f"reference_fk{col}", label=f"Referência da chave estrangeria {nome}", 
-                                        options=[f"FOREIGN KEY ({nome}) REFERENCES {tabela}({', '.join(pk)})" for tabela, pk in chaves_primarias.items()])
-            with ondelete:
-                on_delete = st.selectbox(key=f"on_del{col}", label=f"Tipo de ON DELETE", 
-                                        options=["Nenhum", "ON DELETE CASCADE", "ON DELETE RESTRICT"])
-                if on_delete != 'Nenhum':
-                    referencia += f" {on_delete}"
-            lista_fks.append(referencia)
-            for indice, con in enumerate(config):
-                if con == "FOREIGN KEY":
-                    config.pop(indice)
 
         if len(config) > 0:
             if len(config) > 1:
@@ -169,14 +155,46 @@ def CRUD():
                 dic_cols[nome] = tipo + " " + config[0]
         else:
             dic_cols[nome] = tipo
-    
-    dic_cols['fks'] = lista_fks
-    print(dic_cols)
+
+    dic_cols['keys'] = []
+
+    st.header("Defina a chave primária")
+
+    pk_composta = st.selectbox("A nova tabela possui chave primária composta?", ["Não", "Sim"])
+    if pk_composta == 'Não':
+        chave_primaria = st.selectbox("Selecione a chave primária", lista_colunas)
+        dic_cols['keys'].append(f"PRIMARY KEY ({chave_primaria})")
+    else:
+        chave_primaria = st.multiselect("Selecione as colunas que devem compor a chave primária composta", lista_colunas)
+        dic_cols['keys'].append(f"PRIMARY KEY ({', '.join(chave_primaria)})")
+
+    st.header("Defina a chave estrangeira")
+
+    fk_exists = st.selectbox("A nova tabela possui chave estrangeira?", ["Não", "Sim"])
+    if fk_exists == "Sim":
+        fk_composta = st.selectbox("A chave estrangeira deve ser composta?", ["Não", "Sim"])
+        if fk_composta == 'Não':
+            chave_estrangeira = st.selectbox("Selecione a coluna que deve ser chave estrangeira", lista_colunas)
+            referencia_estrangeira = st.selectbox("Selecione sua referência", [f"FOREIGN KEY ({chave_estrangeira}) REFERENCES {tabela}({', '.join(pk)})" for tabela, pk in chaves_primarias.items()])
+            on_delete = st.selectbox("Selecione o tipo de ON DELETE", ["Nenhum", "ON DELETE CASCADE", "ON DELETE RESTRICT"])
+            if on_delete != "Nenhum":
+                referencia_estrangeira += f" {on_delete}"
+            dic_cols['keys'].append(referencia_estrangeira)
+        else:
+            chave_estrangeira = st.multiselect("Selecione as colunas que devem compor a chave estrangeira", lista_colunas)
+            referencia_estrangeira = st.selectbox("Selecione sua referência", [f"FOREIGN KEY ({', '.join(chave_estrangeira)}) REFERENCES {tabela}({', '.join(pk)})" for tabela, pk in chaves_primarias.items()])
+            on_delete = st.selectbox("Selecione o tipo de ON DELETE", ["Nenhum", "ON DELETE CASCADE", "ON DELETE RESTRICT"])
+            if on_delete != "Nenhum":
+                referencia_estrangeira += f" {on_delete}"
+            dic_cols['keys'].append(referencia_estrangeira)
+
     if st.button("Criar tabela"):
         criar_tabela(nome_da_tabela, dic_cols)
         tabelas_disponiveis.append(nome_da_tabela)
 
+    #Seção de adição de coluna - CREATE
     st.header("Adicionar Nova Coluna")
+    configuracoes_uni = ['PRIMARY KEY', 'FOREIGN KEY', 'NOT NULL', 'AUTO_INCREMENT']
     tabela_uni = st.selectbox("Selecione a tebela a receber a nova coluna", tabelas_disponiveis)
     nome_uni = st.text_input("Nome da nova coluna")
     col_tipo_uni, col_config_tipo_uni = st.columns([1, 1])
@@ -196,7 +214,7 @@ def CRUD():
         elif tipo_uni == 'BIGINT':
             bigint_espec_uni = st.selectbox(label="Tipo de BIGINT", options=["SIGNED", "UNSIGNED"])
             tipo_uni += f" {bigint_espec_uni}"
-    config_uni = st.multiselect(label=f"Configurações da {col + 1}° coluna", options=configuracoes)
+    config_uni = st.multiselect(label=f"Configurações da nova coluna", options=configuracoes_uni)
     if 'FOREIGN KEY' in config_uni:
         refe_uni, ondelete_uni = st.columns([1, 1])
         with refe_uni:
@@ -214,9 +232,10 @@ def CRUD():
                 config_uni.append(f"ADD {referencia_uni}")
 
     if st.button("Adicionar coluna"):
-        print(config_uni)
-        adicionar_coluna(tabela_uni, nome_uni, f"{tipo_uni} {config_uni[0]}")
-
+        if len(config) > 0:
+            adicionar_coluna(tabela_uni, nome_uni, f"{tipo_uni} {config_uni[0]}")
+        else:
+            adicionar_coluna(tabela_uni, nome_uni, f"{tipo_uni}")
     # Seção de Atualização de Registro - UPDATE
     st.header("Atualizar Registro")
     registros = listar_registros(tabela_selecionada)
