@@ -52,6 +52,45 @@ def CRUD():
         tabelas_disponiveis
     )
 
+    # Seção de Consulta de Registros -- READ
+    st.header("Consultar Registros")
+    where_disponiveis = filtros_por_tabela.get(tabela_selecionada, [' '])
+    where_selecionado = st.selectbox(
+        "Escolha um filtro para a consulta:",
+        where_disponiveis
+    )
+
+    colunas_tabela = obter_colunas_tabela(tabela_selecionada)
+
+    if colunas_tabela:
+        st.write("Selecione as colunas:")
+        colunas_selecionadas = []
+        for coluna in colunas_tabela:
+            if st.checkbox(coluna, key=coluna):
+                colunas_selecionadas.append(coluna)
+
+        # Se nenhuma coluna for selecionada, seleciona todas por padrão
+        if not colunas_selecionadas:
+            colunas_selecionadas = "*"
+
+    # Botão para consultar
+    if st.button("Consultar"):
+        if tabela_selecionada and colunas_tabela:
+            # Executar a consulta
+            resultados, colunas = consulta_colunas_tabela(
+                tabela=tabela_selecionada,
+                colunas=colunas_selecionadas,
+                where=where_selecionado
+            )
+
+            # Exibir resultados
+            if resultados:
+                st.write("Resultados da consulta:")
+                exibir_tabela((resultados, colunas))
+            else:
+                st.write("Nenhum resultado encontrado.")
+        else:
+            st.error("Selecione uma tabela e pelo menos uma coluna.")
     #Seção de Criação de Tabelas - CREATE
 
     tipos_atributos = [
@@ -111,7 +150,7 @@ def CRUD():
             refe, ondelete = st.columns([1, 1])
             with refe:
                 referencia = st.selectbox(key=f"reference_fk{col}", label=f"Referência da chave estrangeria {nome}", 
-                                        options=[f"FOREIGN KEY {nome} REFERENCES {tabela}({', '.join(pk)})" for tabela, pk in chaves_primarias.items()])
+                                        options=[f"FOREIGN KEY ({nome}) REFERENCES {tabela}({', '.join(pk)})" for tabela, pk in chaves_primarias.items()])
             with ondelete:
                 on_delete = st.selectbox(key=f"on_del{col}", label=f"Tipo de ON DELETE", 
                                         options=["Nenhum", "ON DELETE CASCADE", "ON DELETE RESTRICT"])
@@ -132,7 +171,7 @@ def CRUD():
             dic_cols[nome] = tipo
     
     dic_cols['fks'] = lista_fks
-
+    print(dic_cols)
     if st.button("Criar tabela"):
         criar_tabela(nome_da_tabela, dic_cols)
         tabelas_disponiveis.append(nome_da_tabela)
@@ -162,7 +201,7 @@ def CRUD():
         refe_uni, ondelete_uni = st.columns([1, 1])
         with refe_uni:
             referencia_uni = st.selectbox(label=f"Referência da chave estrangeria {nome_uni}", 
-                                    options=[f"FOREIGN KEY {nome_uni} REFERENCES {tabela}({', '.join(pk)})" for tabela, pk in chaves_primarias.items()])
+                                    options=[f"FOREIGN KEY ({nome_uni}) REFERENCES {tabela}({', '.join(pk)})" for tabela, pk in chaves_primarias.items()])
         with ondelete_uni:
             on_delete_uni = st.selectbox(label=f"Tipo de ON DELETE", 
                                     options=["Nenhum", "ON DELETE CASCADE", "ON DELETE RESTRICT"])
@@ -172,7 +211,7 @@ def CRUD():
         for indice_uni, con_uni in enumerate(config_uni):
             if con_uni == "FOREIGN KEY":
                 config_uni.pop(indice_uni)
-                config_uni.append(f"ADD f{referencia_uni}")
+                config_uni.append(f"ADD {referencia_uni}")
 
     if st.button("Adicionar coluna"):
         print(config_uni)
@@ -223,47 +262,6 @@ def CRUD():
                 st.warning("Por favor, insira um novo valor.")
     else:
         st.warning(f"Nenhum registro encontrado na tabela '{tabela_selecionada}'.")
-
-    # Seção de Consulta de Registros -- READ
-    st.header("Consultar Registros")
-    where_disponiveis = filtros_por_tabela.get(tabela_selecionada, [' '])
-    where_selecionado = st.selectbox(
-        "Escolha um filtro para a consulta:",
-        where_disponiveis
-    )
-
-    colunas_tabela = obter_colunas_tabela(tabela_selecionada)
-
-    if colunas_tabela:
-        st.write("Selecione as colunas:")
-        colunas_selecionadas = []
-        for coluna in colunas_tabela:
-            if st.checkbox(coluna, key=coluna):
-                colunas_selecionadas.append(coluna)
-
-        # Se nenhuma coluna for selecionada, seleciona todas por padrão
-        if not colunas_selecionadas:
-            colunas_selecionadas = "*"
-
-    # Botão para consultar
-    if st.button("Consultar"):
-        if tabela_selecionada and colunas_tabela:
-            # Executar a consulta
-            resultados, colunas = consulta_colunas_tabela(
-                tabela=tabela_selecionada,
-                colunas=colunas_selecionadas,
-                where=where_selecionado
-            )
-
-            # Exibir resultados
-            if resultados:
-                st.write("Resultados da consulta:")
-                exibir_tabela((resultados, colunas))
-            else:
-                st.write("Nenhum resultado encontrado.")
-        else:
-            st.error("Selecione uma tabela e pelo menos uma coluna.")
-
 
     # Seção de Exclusão de Registro - DELETE
     st.header("Excluir Registro")
