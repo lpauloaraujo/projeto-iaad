@@ -3,6 +3,7 @@ from consultas import *
 from atualizar import *
 from utils import *
 from delete import *
+from insert import *
 
 
 
@@ -336,5 +337,29 @@ def CRUD():
                 st.error(resultado_exclusao["mensagem"])
     else:
         st.warning(f"Nenhum registro encontrado na tabela '{tabela_selecionada}'.")
+
+    # Seção de Inserção de Registro - INSERT
+    st.header("Inserir Novo Registro")
+
+    tabela_inserir = st.selectbox("Selecione a tabela para inserir o novo registro", tabelas_disponiveis)
+    colunas_inserir = obter_colunas_tabela(tabela_inserir)
+
+    valores_inserir = []
+    for coluna in colunas_inserir:
+        valor = st.text_input(f"Valor para '{coluna}':")
+        valores_inserir.append(valor)
+
+    if st.button("Inserir Registro"):
+        if tabela_inserir and colunas_inserir and valores_inserir:
+            resultado_insercao = inserir_registro(tabela_inserir, colunas_inserir, valores_inserir)
+
+            if isinstance(resultado_insercao, list):
+                st.success("Registro inserido com sucesso!")
+                st.write("Tabela atualizada:")
+                st.table(resultado_insercao)
+            else:
+                st.error(resultado_insercao.get("erro", "Erro desconhecido ao inserir registro."))
+        else:
+            st.error("Preencha todos os campos para inserir um novo registro.")
 # Executar a aplicação
 CRUD()
