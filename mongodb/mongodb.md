@@ -45,6 +45,7 @@
 ## 📌 Representação visual.
 
 ![repre visu](Reprevisu.png)
+![diagrama](diagrama.png)
 
 1. **Coleção `startups`**  
    - Cada documento representa uma startup.  
