@@ -1,6 +1,6 @@
 ![mongodb logo](Mongodb.png)
 
-## 📌 Processo de instalação do MongoDb + MongoDB Compass?
+## 📌 Processo de instalação do MongoDb + MongoDB Compass
 
 1. Acesse o site www.mongodb.com
 
@@ -41,6 +41,19 @@
 ## 📌 Como o MongoDB armazena os dados?
 
 ![mongodb works](Mongodbworks.png)
+
+## 📌 Representação visual.
+
+![repre visu](Reprevisu.png)
+
+1. **Coleção `startups`**  
+   - Cada documento representa uma startup.  
+   - Contém informações como nome da startup e cidade sede.  
+   - Possui um array de `programadores`, onde cada programador tem suas informações pessoais, um array de linguagens de programação e um array de `dependentes`, que também tem suas informações pessoais.
+
+2. **Coleção `programadoresDisponiveis`**  
+   - Contém um array de programadores que ainda não estão vinculados a startups.  
+   - Cada programador tem suas informações pessoais, um array de linguagens de programação e um array de `dependentes`, que também tem suas informações pessoais.
 
 ## 📌 CRUD
 
@@ -320,6 +333,13 @@ db.startups.insertOne({
 
 <details>
   <summary>(Read) leitura</summary>
+
+### Retorna as startups.
+  
+````
+db["startups"].find()
+````
+
 
 ### Retorna as startups que têm programadores que sabem programar em Java.
   
