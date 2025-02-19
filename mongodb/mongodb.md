@@ -335,7 +335,11 @@ db.startups.find({"programadores.nomeLinguagens": "Java"})
 ### Atualiza a cidade sede para São Paulo.
   
 ````
-db.startups.deleteOne({ "nomeStartup": "InovaTech" })
+db.startups.updateOne(
+  { "nomeStartup": "InovaTech" },
+  { $set: { "cidadeSede": "São Paulo" } }
+)
+
 ````
 
   </details>
