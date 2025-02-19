@@ -2,14 +2,40 @@
 
 ## 📌 Processo de instalação do MongoDb + MongoDB Compass?
 
+1. Acesse o site www.mongodb.com
+
 ![install 1](Install1.png)
+
+2. Clique em "Produtos" no menu superior e depois clique em "Community Edition".
+
 ![install 2](Install2.png)
+
+3. Role a tela e clique em "Download".
+
 ![install 3](Install3.png)
+
+4. Clique em "Next".
+
 ![install 4](Install4.png)
+
+5. Aceite os termos no Acordo de Licença e clique em "Next".
+
 ![install 5](Install5.png)
+
+6. Clique em "Complete".
+
 ![install 6](Install6.png)
+
+7. Clique em "Next".
+
 ![install 7](Install7.png)
+
+8. Marque a opção "Install MongoDB Compass" e clique em "Next".
+
 ![install 8](Install8.png)
+
+9. Por fim clique em "Install".
+
 ![install 9](Install9.png)
 
 
