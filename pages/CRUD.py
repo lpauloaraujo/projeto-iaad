@@ -235,6 +235,8 @@ def CRUD():
             if con_uni == "FOREIGN KEY":
                 config_uni.pop(indice_uni)
                 config_uni.append(f"ADD {referencia_uni}")
+    
+    
 
     if st.button("Adicionar coluna"):
         if len(config) > 0:
@@ -243,8 +245,11 @@ def CRUD():
             adicionar_coluna(tabela_uni, nome_uni, f"{tipo_uni}")
     # Seção de Atualização de Registro - UPDATE
     st.header("Atualizar Registro")
-    registros = listar_registros(tabela_selecionada)
 
+    tabela_atu = st.selectbox("Selecione a tebela a ser atualizada", tabelas_disponiveis)
+
+    registros = listar_registros(tabela_atu)
+    
     if registros:
         # Exibir os registros em um selectbox para o usuário escolher
         opcoes_registros = [str(registro) for registro in registros]
@@ -256,7 +261,9 @@ def CRUD():
 
         # Exibir as colunas da tabela para o usuário escolher qual alterar
         colunas = list(registro.keys())
+       
         coluna_selecionada = st.selectbox("Escolha a coluna para alterar:", colunas)
+        
 
         # Coletar o novo valor
         novo_valor = st.text_input(f"Novo valor para '{coluna_selecionada}':")
@@ -265,29 +272,35 @@ def CRUD():
         # Botão para confirmar a alteração
         if st.button("Alterar Registro"):
             if novo_valor:
-                # Construir a condição WHERE (usando a chave primária ou todos os campos para garantir unicidade)
-                where_condicao = " AND ".join([f"{k} = %s" for k in registro.keys()])
-                valores_where = tuple(registro.values())
-
-                # Executar a alteração
-                tabela_atualizada = alterar_registro(
-                    tabela=tabela_selecionada,
-                    coluna=coluna_selecionada,
-                    novo_valor=novo_valor,
-                    where_condicao=where_condicao,
-                    valores_where =valores_where  
+                try:
+                    if novo_valor == '<NA>':
+                        novo_valor = None
+                    # Construir a condição WHERE (usando a chave primária ou todos os campos para garantir unicidade)
+                    where_condicao = " AND ".join([f"{k} = %s" if registro[k] is not None else f"{k} IS NULL" for k in registro.keys()]
                 )
+                    valores_where = tuple(val for val in registro.values() if val is not None)
 
-                # Exibir a tabela atualizada
-                if tabela_atualizada:
-                    st.success("Registro alterado com sucesso!")
-                    st.write("Tabela atualizada:")
-                    st.table(tabela_atualizada)
+                    # Executar a alteração
+                    tabela_atualizada = alterar_registro(
+                        tabela=tabela_atu,
+                        coluna=coluna_selecionada,
+                        novo_valor=novo_valor,
+                        where_condicao=where_condicao,
+                        valores_where =valores_where  
+                    )
+
+                    # Exibir a tabela atualizada
+                    if tabela_atualizada:
+                        st.success("Registro alterado com sucesso!")
+                        st.write("Tabela atualizada:")
+                        st.table(tabela_atualizada)
+                except Exception as e:
+                    st.error(f"Erro ao alterar registro: {e}")
             else:
                 st.warning("Por favor, insira um novo valor.")
     else:
         st.warning(f"Nenhum registro encontrado na tabela '{tabela_selecionada}'.")
-
+    
     # Seção de Exclusão de Registro - DELETE
     st.header("Excluir Registro")
     registros_para_excluir = listar_registros(tabela_selecionada)
