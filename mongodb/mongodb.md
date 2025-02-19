@@ -55,6 +55,10 @@
    - Contém um array de programadores que ainda não estão vinculados a startups.  
    - Cada programador tem suas informações pessoais, um array de linguagens de programação e um array de `dependentes`, que também tem suas informações pessoais.
 
+## Diagrama Entidade Relacionamento (DER)
+
+![diagrama](diagrama.png)
+
 ## 📌 Como os relacionamentos funcionam no MongoDB?
 
 Diferente de um banco relacional, onde os relacionamentos são mantidos por chaves primárias e estrangeiras distribuídas entre tabelas, no MongoDB existem duas formas principais de estruturar relacionamentos:
