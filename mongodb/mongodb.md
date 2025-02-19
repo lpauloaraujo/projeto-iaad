@@ -45,7 +45,6 @@
 ## 📌 Representação visual.
 
 ![repre visu](Reprevisu.png)
-![diagrama](diagrama.png)
 
 1. **Coleção `startups`**  
    - Cada documento representa uma startup.  
@@ -55,6 +54,10 @@
 2. **Coleção `programadoresDisponiveis`**  
    - Contém um array de programadores que ainda não estão vinculados a startups.  
    - Cada programador tem suas informações pessoais, um array de linguagens de programação e um array de `dependentes`, que também tem suas informações pessoais.
+
+## Diagrama Entidade Relacionamento (DER)
+
+![diagrama](diagrama.png)
 
 ## 📌 Como os relacionamentos funcionam no MongoDB?
 
