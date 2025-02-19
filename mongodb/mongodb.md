@@ -102,183 +102,145 @@ use nome-do-database-desejado
 ### Documento startups
 
 ````
-/** 
-* Paste one or more documents here
-*/
-{
-  "_id": {
-    "$oid": "67b45cc4d23e5ee117e0dd67"
+[
+  {
+    "_id": { "$oid": "67b45cc4d23e5ee117e0dd67" },
+    "nomeStartup": "Tech4Toy",
+    "cidadeSede": "Porto Alegre",
+    "programadores": [
+      {
+        "nomeProgramador": "João Pedro",
+        "generoProgramador": "M",
+        "dataNascimentoProgramador": "1993-06-23",
+        "nomeLinguagens": ["Python", "PHP"],
+        "dependentes": [
+          {
+            "nomeDependente": "André Sousa",
+            "parentescoDependente": "Filho",
+            "dataNascimentoDependente": "2020-05-15"
+          }
+        ]
+      },
+      {
+        "nomeProgramador": "Ana Cristina",
+        "generoProgramador": "F",
+        "dataNascimentoProgramador": "1968-02-19",
+        "nomeLinguagens": [],
+        "dependentes": []
+      }
+    ]
   },
-  "nomeStartup": "Tech4Toy",
-  "cidadeSede": "Porto Alegre",
-  "programadores": [
-    {
-      "nomeProgramador": "João Pedro",
-      "generoProgramador": "M",
-      "dataNascimentoProgramador": "1993-06-23",
-      "nomeLinguagens": [ "Python", "PHP" ],
-      "dependentes": [
-        {
-          "nomeDependente": "André Sousa",
-          "parentescoDependente": "Filho",
-          "dataNascimentoDependente": "2020-05-15"
-        }
-      ]
-    },
-    {
-      "nomeProgramador": "Ana Cristina",
-      "generoProgramador": "F",
-      "dataNascimentoProgramador": "1968-02-19",
-      "nomeLinguagens": [],
-      "dependentes": []
-    }
-  ],
-  "nomeStartup": "Smart123",
-  "cidadeSede": "Belo Horizonte",
-  "programadores": [
-    {
-      "nomeProgramador": "Paula Silva",
-      "generoProgramador": "F",
-      "dataNascimentoProgramador": "1986-01-10",
-      "nomeLinguagens": [ "Java" ],
-      "dependentes": [
-        {
-          "nomeDependente": "Luciana Silva",
-          "parentescoDependente": "Filha",
-          "dataNascimentoDependente": "2018-07-26"
-        },
-        {
-          "nomeDependente": "Elisa Silva",
-          "parentescoDependente": "Filha",
-          "dataNascimentoDependente": "2020-01-06"
-        },
-        {
-          "nomeDependente": "Breno Silva",
-          "parentescoDependente": "Esposo",
-          "dataNascimentoDependente": "1984-05-21"
-        }
-      ]
-    },
-    {
-      "nomeProgramador": "Laura Marques",
-      "generoProgramador": "F",
-      "dataNascimentoProgramador": "1987-10-04",
-      "nomeLinguagens": [ "Python", "PHP" ],
-      "dependentes": [
-        {
-          "nomeDependente": "Daniel Marques",
-          "parentescoDependente": "Filho",
-          "dataNascimentoDependente": "2014-06-06"
-        }
-      ]
-    }
-  ],
-  "nomeStartup": "knowledgeUp",
+  {
+    "nomeStartup": "Smart123",
+    "cidadeSede": "Belo Horizonte",
+    "programadores": [
+      {
+        "nomeProgramador": "Paula Silva",
+        "generoProgramador": "F",
+        "dataNascimentoProgramador": "1986-01-10",
+        "nomeLinguagens": ["Java"],
+        "dependentes": [
+          {
+            "nomeDependente": "Luciana Silva",
+            "parentescoDependente": "Filha",
+            "dataNascimentoDependente": "2018-07-26"
+          },
+          {
+            "nomeDependente": "Elisa Silva",
+            "parentescoDependente": "Filha",
+            "dataNascimentoDependente": "2020-01-06"
+          },
+          {
+            "nomeDependente": "Breno Silva",
+            "parentescoDependente": "Esposo",
+            "dataNascimentoDependente": "1984-05-21"
+          }
+        ]
+      },
+      {
+        "nomeProgramador": "Laura Marques",
+        "generoProgramador": "F",
+        "dataNascimentoProgramador": "1987-10-04",
+        "nomeLinguagens": ["Python", "PHP"],
+        "dependentes": [
+          {
+            "nomeDependente": "Daniel Marques",
+            "parentescoDependente": "Filho",
+            "dataNascimentoDependente": "2014-06-06"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "nomeStartup": "KnowledgeUp",
     "cidadeSede": "Rio de Janeiro",
     "programadores": [
-        {
-            "nomeProgramador": "Renata Vieira",
-            "generoProgramador": "F",
-            "dataNascimentoProgramador": "1991-07-05",
-            "nomeLinguagens": [ "C", "JavaScript" ],
-            "dependentes": []
-        }
-    ],
+      {
+        "nomeProgramador": "Renata Vieira",
+        "generoProgramador": "F",
+        "dataNascimentoProgramador": "1991-07-05",
+        "nomeLinguagens": ["C", "JavaScript"],
+        "dependentes": []
+      }
+    ]
+  },
+  {
     "nomeStartup": "BSI Next Level",
     "cidadeSede": "Recife",
     "programadores": [
-        {
-            "nomeProgramador": "Felipe Santos",
-            "generoProgramador": "M",
-            "dataNascimentoProgramador": "1976-11-25",
-            "nomeLinguagens": [ "JavaScript" ],
-            "dependentes": [
-                {
-                    "nomeDependente": "Rafaela Santos",
-                    "parentescoDependente": "Esposa",
-                    "dataNascimentoDependente": "1980-02-12"
-                },
-              {
-                    "nomeDependente": "Marcos Martins",
-                    "parentescoDependente": "Filho",
-                    "dataNascimentoDependente": "2008-03-26"
-                }
-            ]
-        },
-        {
-            "nomeProgramador": "Fernando Alves",
-            "generoProgramador": "M",
-            "dataNascimentoProgramador": "1988-07-07",
-            "nomeLinguagens": [],
-            "dependentes": [
-                {
-                    "nomeDependente": "Laís Meneses",
-                    "parentescoDependente": "Esposa",
-                    "dataNascimentoDependente": "1990-11-09"
-                }
-            ]
-        }
-    ],
-  "nomeStartup": "QualiHealth",
-    "cidadeSede": "São Paulo",
+      {
+        "nomeProgramador": "Felipe Santos",
+        "generoProgramador": "M",
+        "dataNascimentoProgramador": "1976-11-25",
+        "nomeLinguagens": ["JavaScript"],
+        "dependentes": [
+          {
+            "nomeDependente": "Rafaela Santos",
+            "parentescoDependente": "Esposa",
+            "dataNascimentoDependente": "1980-02-12"
+          },
+          {
+            "nomeDependente": "Marcos Martins",
+            "parentescoDependente": "Filho",
+            "dataNascimentoDependente": "2008-03-26"
+          }
+        ]
+      },
+      {
+        "nomeProgramador": "Fernando Alves",
+        "generoProgramador": "M",
+        "dataNascimentoProgramador": "1988-07-07",
+        "nomeLinguagens": [],
+        "dependentes": [
+          {
+            "nomeDependente": "Laís Meneses",
+            "parentescoDependente": "Esposa",
+            "dataNascimentoDependente": "1990-11-09"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "nomeStartup": "CommerceIA",
+    "cidadeSede": "Manaus",
     "programadores": [
       {
-      "nomeProgramador": "",
-      "generoProgramador": "",
-      "dataNascimentoProgramador": "",
-      "nomeLinguagens": [],
-      "dependentes": [
-        {
-          "nomeDependente": "",
-          "parentescoDependente": "",
-          "dataNascimentoDependente": ""
-        }
-      ]
-    }
-    ],
-  "nomeStartup": "ProEdu",
-    "cidadeSede": "Florianópolis",
-    "programadores": [
-      {
-      "nomeProgramador": "",
-      "generoProgramador": "",
-      "dataNascimentoProgramador": "",
-      "nomeLinguagens": [],
-      "dependentes": [
-        {
-          "nomeDependente": "",
-          "parentescoDependente": "",
-          "dataNascimentoDependente": ""
-        }
-      ]
-    }
-    ],
-  "nomeStartup": "CommerceIA",
-  "cidadeSede": "Manaus",
-  "programadores": [
-    {
-      "nomeProgramador": "Alice Lins",
-      "generoProgramador": "F",
-      "dataNascimentoProgramador": "2000-10-09",
-      "nomeLinguagens": [],
-      "dependentes": [
-        {
-          "nomeDependente": "",
-          "parentescoDependente": "",
-          "dataNascimentoDependente": ""
-        }
-      ]
-    }
-  ]
-}
+        "nomeProgramador": "Alice Lins",
+        "generoProgramador": "F",
+        "dataNascimentoProgramador": "2000-10-09",
+        "nomeLinguagens": [],
+        "dependentes": []
+      }
+    ]
+  }
+]
 ````
   
 ### Documento programadoresDisponiveis
   
 ````
-/** 
-* Paste one or more documents here
-*/
 {
   "_id": {
     "$oid": "67b46da3d23e5ee117e0dd6b"
@@ -289,19 +251,13 @@ use nome-do-database-desejado
       "generoProgramador": "M",
       "dataNascimentoProgramador": "2000-10-09",
       "nomeLinguagens": [],
-      "dependentes": [
-        {
-          "nomeDependente": "",
-          "parentescoDependente": "",
-          "dataNascimentoDependente": ""
-        }
-      ]
+      "dependentes": []
     },
     {
       "nomeProgramador": "Camila Macedo",
       "generoProgramador": "F",
       "dataNascimentoProgramador": "1995-07-03",
-      "nomeLinguagens": [ "C", "SQL" ],
+      "nomeLinguagens": ["C", "SQL"],
       "dependentes": [
         {
           "nomeDependente": "Lidiane Macedo",
@@ -314,14 +270,8 @@ use nome-do-database-desejado
       "nomeProgramador": "Leonardo Ramos",
       "generoProgramador": "M",
       "dataNascimentoProgramador": "2005-07-05",
-      "nomeLinguagens": [ "SQL" ],
-      "dependentes": [
-        {
-          "nomeDependente": "",
-          "parentescoDependente": "",
-          "dataNascimentoDependente": ""
-        }
-      ]
+      "nomeLinguagens": ["SQL"],
+      "dependentes": []
     }
   ]
 }
