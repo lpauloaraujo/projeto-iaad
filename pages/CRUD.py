@@ -304,7 +304,9 @@ def CRUD():
     
     # Seção de Exclusão de Registro - DELETE
     st.header("Excluir Registro")
-    registros_para_excluir = listar_registros(tabela_selecionada)
+
+    tabela_excluir = st.selectbox("Selecione a tabela para excluir o registro", tabelas_disponiveis)
+    registros_para_excluir = listar_registros(tabela_excluir)
 
     if registros_para_excluir:
         # Exibir os registros em um selectbox para o usuário escolher
@@ -323,7 +325,7 @@ def CRUD():
 
             # Executar a exclusão
             resultado_exclusao = deletar_registro(
-                tabela=tabela_selecionada,
+                tabela=tabela_excluir,
                 where_condicao=where_condicao_excluir,
                 valores_where=valores_where_excluir
             )
@@ -336,7 +338,7 @@ def CRUD():
             else:
                 st.error(resultado_exclusao["mensagem"])
     else:
-        st.warning(f"Nenhum registro encontrado na tabela '{tabela_selecionada}'.")
+        st.warning(f"Nenhum registro encontrado na tabela '{tabela_excluir}'.")
 
     # Seção de Inserção de Registro - INSERT
     st.header("Inserir Novo Registro")
