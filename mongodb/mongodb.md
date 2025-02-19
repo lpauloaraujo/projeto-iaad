@@ -1,5 +1,18 @@
 ![mongodb logo](Mongodb.png)
 
+## 📌 Processo de instalação do MongoDb + MongoDB Compass?
+
+![install 1](Install1.png)
+![install 2](Install2.png)
+![install 3](Install3.png)
+![install 4](Install4.png)
+![install 5](Install5.png)
+![install 6](Install6.png)
+![install 7](Install7.png)
+![install 8](Install8.png)
+![install 9](Install9.png)
+
+
 ## 📌 Como o mongodb armazena os dados?
 
 ![mongodb works](Mongodbworks.png)
@@ -11,7 +24,7 @@ Diferente de um banco relacional, onde os relacionamentos são mantidos por chav
 ### Documentos Incorporados (Embedded Documents)
 Os dados relacionados são armazenados dentro de um mesmo documento.
 
-**Exemplo:** No seu banco, os programadores estão dentro das startups e os dependentes dentro dos programadores.
+**Exemplo:** No nosso banco, os programadores estão dentro das startups e os dependentes dentro dos programadores.
 - 🚀 **Vantagem:** Acesso rápido e eficiente aos dados relacionados sem necessidade de joins.
 - ⚠️ **Desvantagem:** Pode gerar documentos muito grandes, tornando atualizações mais complexas.
 
